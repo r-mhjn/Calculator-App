@@ -11,13 +11,7 @@ import {
 } from "react-native";
 import { responsiveFontSize } from "react-native-responsive-dimensions";
 
-// Importing style
-import GlobalStyles from "./src/GlobalStyles";
-
-var screenWidth = Dimensions.get("window").width;
-var screenHeight = Dimensions.get("window").height;
-
-export default class App extends React.Component {
+export default class Calculator extends React.Component {
   constructor(props) {
     super(props);
 
@@ -26,7 +20,7 @@ export default class App extends React.Component {
     };
   }
 
-  
+ 
   updateInputString = val => {
     let inputString = this.state.inputString;
     let last_char = inputString.charAt(inputString.length);
@@ -35,19 +29,15 @@ export default class App extends React.Component {
       // to get rid of text in case of invalid string and infinity
       inputString = "";
     }
-
-    if (isNaN(inputString.charAt(inputString.length - 1)) && isNaN(val)) {
-      // if the last element in the string is an operator and user clicks another operator the entry is not accepted
-      console.log(inputString.charAt(inputString.length - 1) + " " + val);
-      if (
-        (inputString.charAt(inputString.length - 1) !== "*" || val !== "-") &&
-        (inputString.charAt(inputString.length - 1) !== "/" || val !== "-")
-      ) {
-        console.log(inputString.charAt(inputString.length - 1) + " " + val);
+    console.log(inputString + " " + val);
+    if (
+      (inputString.charAt(inputString.length - 1) != "/" ||
+        inputString.charAt(inputString.length - 1) != "*") &&
+      val != "-"
+    ) {
+      if (isNaN(inputString.charAt(inputString.length - 1)) && isNaN(val)) {
+        // if the last element in the string is an operator and user clicks another operator the entry is not accepted
         inputString = inputString.slice(0, inputString.length - 1) + val;
-        this.setState({ inputString });
-      } else {
-        inputString += val;
         this.setState({ inputString });
       }
     } else {
@@ -63,7 +53,7 @@ export default class App extends React.Component {
   displayAnswer = () => {
     let string = this.state.inputString;
     let answer;
-    // console.log(answer);
+    console.log(answer);
 
     try {
       if (string.charAt(0) != "√") {
@@ -101,7 +91,7 @@ export default class App extends React.Component {
 
   render() {
     return (
-      <SafeAreaView style={GlobalStyles.AndroidSafeArea}>
+      <SafeAreaView style={styles.container}>
         <View style={styles.container}>
           <View style={styles.displayScreen}>
             <TextInput
@@ -112,37 +102,27 @@ export default class App extends React.Component {
               value={this.state.inputString}
               placeholder="0"
               placeholderTextColor="#fff"
-              adjustsFontSizeToFit={true}
             />
           </View>
 
-          <View
-            style={{
-              borderWidth: 1,
-              borderColor: "#696969",
-              width: screenWidth * 0.85,
-              marginHorizontal: screenWidth * 0.075
-            }}
-          ></View>
-
           <View style={styles.gridContainer}>
             <View style={styles.rowContainer}>
-              <TouchableOpacity
-                onPress={() => {
-                  this.resetDisplay();
-                }}
-                style={styles.button}
-              >
-                <Text style={[styles.buttonText, { color: "#fff" }]}>C</Text>
-              </TouchableOpacity>
-
               <TouchableOpacity
                 onPress={() => {
                   this.updateInputString("%");
                 }}
                 style={styles.button}
               >
-                <Text style={[styles.buttonText, { color: "#fff" }]}>Mod</Text>
+                <Text style={styles.buttonText}>Mod</Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                onPress={() => {
+                  this.resetDisplay();
+                }}
+                style={styles.button}
+              >
+                <Text style={styles.buttonText}>C</Text>
               </TouchableOpacity>
 
               <TouchableOpacity
@@ -162,7 +142,7 @@ export default class App extends React.Component {
                 }}
                 style={styles.specialButton}
               >
-                <Text style={[styles.specialText]}>/</Text>
+                <Text style={[styles.buttonText]}>/</Text>
               </TouchableOpacity>
             </View>
 
@@ -200,7 +180,9 @@ export default class App extends React.Component {
                 }}
                 style={styles.specialButton}
               >
-                <Text style={styles.specialText}>x</Text>
+                <Text style={styles.buttonText}>
+                  <Icon name="close" style={[{ color: "#fff" }]}></Icon>
+                </Text>
               </TouchableOpacity>
             </View>
 
@@ -238,7 +220,7 @@ export default class App extends React.Component {
                 }}
                 style={styles.specialButton}
               >
-                <Text style={[styles.specialText]}>-</Text>
+                <Text style={[styles.buttonText]}>-</Text>
               </TouchableOpacity>
             </View>
 
@@ -276,7 +258,7 @@ export default class App extends React.Component {
                 }}
                 style={styles.specialButton}
               >
-                <Text style={[styles.specialText]}>+</Text>
+                <Text style={[styles.buttonText]}>+</Text>
               </TouchableOpacity>
             </View>
 
@@ -314,24 +296,7 @@ export default class App extends React.Component {
                 }}
                 style={styles.specialButton}
               >
-                <Text
-                  style={[
-                    styles.specialText,
-                    {
-                      borderWidth: 1,
-                      borderColor: "#ff5d6d",
-                      borderRadius: 100,
-                      color: "#fff",
-                      // padding: 6,
-                      paddingHorizontal: 14,
-                      paddingVertical: 4.5,
-                      marginHorizontal: 3,
-                      backgroundColor: "#ff5d6d"
-                    }
-                  ]}
-                >
-                  =
-                </Text>
+                <Text style={[styles.buttonText]}>=</Text>
               </TouchableOpacity>
             </View>
           </View>
@@ -341,63 +306,64 @@ export default class App extends React.Component {
   }
 }
 
-//#1c1e22
-//#1a1e24
-//#22262c
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#1c1e22",
+    // borderColor: 'black',
+    // borderWidth:1,
+    backgroundColor: "#000000",
     marginTop: 31
   },
   displayScreen: {
     flex: 1,
     flexDirection: "row",
+    // borderColor:"blue",
+    // borderWidth:2,
     alignItems: "flex-end"
   },
   displayInput: {
     height: Dimensions.get("window").height * 0.2,
-    width: Dimensions.get("window").width * 0.85,
-    marginHorizontal: Dimensions.get("window").width * 0.075,
+    width: Dimensions.get("window").width * 0.9,
+    marginHorizontal: Dimensions.get("window").width * 0.05,
     textAlign: "right",
     color: "#fff",
+    // borderColor: 'gray',
+    // borderWidth: 1,
     fontSize: responsiveFontSize(5),
     fontWeight: "700"
   },
   gridContainer: {
-    flex: 1,
-    marginBottom: screenHeight * 0.01
+    flex: 1
+    //  borderColor:"green",
+    //  borderWidth:4,
   },
   rowContainer: {
     flex: 1,
     flexDirection: "row"
+    // borderColor:"red",
+    // borderWidth:2,
   },
   button: {
     flex: 1,
-    // backgroundColor: '#2b2d2f',
+    backgroundColor: "#1d3849",
     borderColor: "black",
+    borderWidth: 2,
     justifyContent: "center",
     alignItems: "center",
-    borderRadius: 5,
-    margin: 3
+    margin: 1
   },
   specialButton: {
     flex: 1,
-    // backgroundColor: '#2b2d2f',
+    backgroundColor: "#51b8a6",
     borderColor: "black",
+    borderWidth: 2,
     justifyContent: "center",
     alignItems: "center",
-    borderRadius: 5,
-    margin: 3
+    margin: 1
   },
   buttonText: {
     fontSize: responsiveFontSize(2.5),
     fontWeight: "500",
-    color: "#696969"
-  },
-  specialText: {
-    fontSize: responsiveFontSize(2.5),
-    fontWeight: "500",
-    color: "#ff5d6d"
+    color: "#fff"
   }
 });
